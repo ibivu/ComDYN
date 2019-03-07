@@ -1,0 +1,96 @@
+#!/bin/bash -e
+
+# calc_hist_shifts v0.1
+# Copyright (c) 2018 K. Anton Feenstra (feenstra@few.vu.nl)
+# 
+# This may look like software, but is an actual research tool.
+# It workes for the purpose it was written for. It may work for you.
+# If not and/or it ends up destroying your universe and all you hold
+# dear, I will feel sorry for you, but you cannot hold me responsible.
+# Please do file a bug report :-)
+# 
+# newest version(s) available from:
+# https://github.com/ibivu/ConsDYN.git 
+# 
+#    PLEASE CITE:
+#    
+#    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
+#    Kei Yura, K. Anton Feenstra. 
+#    "Exploring the effect of single amino acid variations on the 
+#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
+#    enhanced sampling coarse-grained simulation"
+#    F1000, submitted (2019).
+#    
+#    :ETIC ESAELP
+#    
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# calculate shifts in distance histograms 
+# ./calc_overlap.py -r hist_4ZW9_CON_WILD_all_TM1-out_TM5-out.xvg
+#                   -f hist_4ZW9_CON_[A-Z][0-9]*_all_TM1-out_TM5-out.xvg
+for i in hist_*_CON_WILD_all_TM*-*_TM*-*.xvg; do
+    echo $i
+    name=${i/_WILD_/_WT-vs-all_} # name for output
+    name=${name%.xvg}
+    name=${name/-in_/-} # strip first 'in_'
+    name=${name/-out_/-} # strip first 'out_'
+    j=${i/_WILD_/_[A-Z][0-9]*_} # insert wildchard to get all mutants
+    # make name for 'other' WT:
+    k=${i/_4ZW9_/_@@@@_} # mark 4ZW9 if it's there
+    k=${k/_5EQI_/_4ZW9_} # switch 5EQI to 4ZW9 if it's there
+    k=${k/_@@@@_/_5EQI_} # if we have 4ZW9 marker, switch to 5EQI
+    echo "Ref WT" $k
+    echo "Mutants" $j
+    echo "Output" $name
+    ./calc_overlap.py -r $i -f $k $j > $name.txt
+    echo "."
+done
+
+# make tables:
+out=tables.csv
+echo "Writing tables to $out"
+for WT in 4ZW9 5EQI; do
+    echo $WT
+    # title row (mutants):
+    printf "Helices"
+    awk '/^Reading/{n=$3; \
+    	sub("hist_...._CON_","",n); \
+	sub("_all_TM[0-9].*_TM[0-9].*.xvg","",n); \
+	printf "\t" n "\t"; }' \
+        hist_${WT}_CON_WT-vs-all_all_TM1-TM2-in.txt
+    printf "\n"
+    # sub header rows (just reading file to get the right count):
+    awk '/^Reading/{printf "\tOverlap\tShift"; }' \
+        hist_${WT}_CON_WT-vs-all_all_TM1-TM2-in.txt
+    printf "\n"
+    # data rows:
+    for i in hist_${WT}_CON_WT-vs-all_all_TM*-TM*.txt; do
+	n=${i/hist_*_CON_WT-vs-all_all_}
+	n=${n%.txt}
+	printf $n
+	awk '/^Overlap/{printf "\t"$2} \
+	     /^Shift/{printf "\t"$2}' $i
+	printf "\n"
+    done
+done > $out
+echo "Wrote tables to $out"
+
+# make simple table:
+awk '/^Reading/{printf $3} \
+     /^Overlap/{printf "\t"$2}\
+     /^Shift/{printf "\t"$2"\n"}' hist_*_CON_*_all_TM*-TM*.txt > simple_table.txt
+
+
+#last line

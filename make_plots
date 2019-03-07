@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# make_plots v0.1
+# Copyright (c) 2018 K. Anton Feenstra (feenstra@few.vu.nl)
+# 
+# This may look like software, but is an actual research tool.
+# It workes for the purpose it was written for. It may work for you.
+# If not and/or it ends up destroying your universe and all you hold
+# dear, I will feel sorry for you, but you cannot hold me responsible.
+# Please do file a bug report :-)
+# 
+# newest version(s) available from:
+# https://github.com/ibivu/ConsDYN.git 
+# 
+#    PLEASE CITE:
+#    
+#    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
+#    Kei Yura, K. Anton Feenstra. 
+#    "Exploring the effect of single amino acid variations on the 
+#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
+#    enhanced sampling coarse-grained simulation"
+#    F1000, submitted (2019).
+#    
+#    :ETIC ESAELP
+#    
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+for s in in out; do
+    for i in hist_4ZW9_CON_WILD_all_TM*-$s.xvg; do 
+	j=${i/_4ZW9_/_*_}; 
+	n=${i/_4ZW9_/_both_}; 
+	n=${n%.xvg}
+	echo $n; 
+	if [ ! -f "$n.pdf" ]; then
+	    xmgrace -legend load -hardcopy -hdevice EPS \
+		    -printfile "$n.eps" $j
+	    epstopdf "$n.eps" "$n.pdf"
+	    rm "$n.eps"
+	fi
+    done
+done
+
+# selected helices:
+# TM1-TM7 outside: 1.3-->1.6 nm "opening"
+# TM1-TM7 inside:   2.5-->2.2 nm "closing"
+# TM2-TM8 outside: 1.8-1.3 "closing" (broad)
+# TM2-TM11 inside: 0.8-->0.5 nm "closing"
+# TM5-TM11 inside: 0.6-->1.2 nm "opening"
+
+for p in 4ZW9 5EQI; do
+    for d in TM1-out_TM7-out \
+		 TM1-in_TM7-in \
+		 TM2-out_TM8-out \
+		 TM2-in_TM11-in \
+		 TM5-in_TM11-in; do
+	out=hist_${p}_CON_all_all_${d}
+	echo $out
+	xmgrace -legend load -hardcopy -hdevice EPS \
+		-printfile $out.eps \
+		thick_WT.agr \
+		hist_*_CON_WILD_all_$d.xvg \
+		hist_${p}_CON_[A-Z][0-9]*[0-9][A-Z]_all_$d.xvg 
+		#-saveall $out.agr \
+	epstopdf $out.eps $out.pdf
+	rm $out.eps
+    done
+done
+
+for m in R92W R333W R90W R331W G91D R92Q; do echo $m; for i in hist_*_CON_${m}_all_*.xvg; do j=${i/$m/WILD}; j=${j/5EQI/*}; j=${j/4ZW9/*}; echo $i; xmgrace -legend load $j $i; done; done
+
+for m in R93Q R334Q R91H R91C R331S R331K G89V; do echo $m; for i in hist_*_CON_${m}_all_*.xvg; do j=${i/$m/WILD}; j=${j/5EQI/*}; j=${j/4ZW9/*}; echo $i; xmgrace -legend load $j $i; done; done
+
+#last line

@@ -1,0 +1,108 @@
+# Copyright (c) 2018 K. Anton Feenstra (feenstra@few.vu.nl)
+# 
+# This may look like software, but is an actual research tool.
+# It workes for the purpose it was written for. It may work for you.
+# If not and/or it ends up destroying your universe and all you hold
+# dear, I will feel sorry for you, but you cannot hold me responsible.
+# Please do file a bug report :-)
+# 
+# newest version(s) available from:
+# https://github.com/ibivu/ConsDYN.git 
+# 
+#    PLEASE CITE:
+#    
+#    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
+#    Kei Yura, K. Anton Feenstra. 
+#    "Exploring the effect of single amino acid variations on the 
+#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
+#    enhanced sampling coarse-grained simulation"
+#    F1000, submitted (2019).
+#    
+#    :ETIC ESAELP
+#    
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 		TM1:	in	6-52	out
+# TM1 in out 6 52
+"C-alpha" & r 6-15
+name 10 TM1-in
+"C-alpha" & r 43-52
+name 11 TM1-out
+# 		TM2:	out	54-88	in
+# TM2 out in 54 88
+"C-alpha" & r 54-63
+name 12 TM2-out
+"C-alpha" & r 79-88
+name 13 TM2-in
+# 		TM3:	in	88-110	out
+# TM3 in out 88 110
+"C-alpha" & r 88-97
+name 14 TM3-in
+"C-alpha" & r 101-110
+name 15 TM3-out
+# 		TM4:	out	119-146	in
+# TM4 out in 119 146
+"C-alpha" & r 119-128
+name 16 TM4-out
+"C-alpha" & r 137-146
+name 17 TM4-in
+# 		TM5:	in	146-173	out
+# TM5 in out 146 173
+"C-alpha" & r 146-155
+name 18 TM5-in
+"C-alpha" & r 164-173
+name 19 TM5-out
+# 		TM6:	out	182-201	in
+# TM6 out in 182 201
+"C-alpha" & r 182-191
+name 20 TM6-out
+"C-alpha" & r 192-201
+name 21 TM6-in
+# 		TM7:	in	265-299	out
+# TM7 in out 265 299
+"C-alpha" & r 265-274
+name 22 TM7-in
+"C-alpha" & r 290-299
+name 23 TM7-out
+# 		TM8:	out	302-328	in
+# TM8 out in 302 328
+"C-alpha" & r 302-311
+name 24 TM8-out
+"C-alpha" & r 319-328
+name 25 TM8-in
+# 		TM9:	in	328-358	out
+# TM9 in out 328 358
+"C-alpha" & r 328-337
+name 26 TM9-in
+"C-alpha" & r 349-358
+name 27 TM9-out
+# 		TM10:	out	360-391	in
+# TM10 out in 360 391
+"C-alpha" & r 360-369
+name 28 TM10-out
+"C-alpha" & r 382-391
+name 29 TM10-in
+# 		TM11:	in	396-427	out
+# TM11 in out 396 427
+"C-alpha" & r 396-405
+name 30 TM11-in
+"C-alpha" & r 418-427
+name 31 TM11-out
+# 		TM12:	out	428-448	in
+# TM12 out in 428 448
+"C-alpha" & r 428-437
+name 32 TM12-out
+"C-alpha" & r 439-448
+name 33 TM12-in
+q

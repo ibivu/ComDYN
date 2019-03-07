@@ -1,0 +1,143 @@
+#!/bin/bash -e
+
+# run_mindist v0.1
+# Copyright (c) 2018 K. Anton Feenstra (feenstra@few.vu.nl)
+# 
+# This may look like software, but is an actual research tool.
+# It workes for the purpose it was written for. It may work for you.
+# If not and/or it ends up destroying your universe and all you hold
+# dear, I will feel sorry for you, but you cannot hold me responsible.
+# Please do file a bug report :-)
+# 
+# newest version(s) available from:
+# https://github.com/ibivu/ConsDYN.git 
+# 
+#    PLEASE CITE:
+#    
+#    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
+#    Kei Yura, K. Anton Feenstra. 
+#    "Exploring the effect of single amino acid variations on the 
+#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
+#    enhanced sampling coarse-grained simulation"
+#    F1000, submitted (2019).
+#    
+#    :ETIC ESAELP
+#    
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+for PDB in 4ZW9 5EQI; do
+    for pdb in ${PDB}_CON_*_[0-9]_cgx.pdb; do
+	p=`echo $PDB | awk '{print tolower($1)}'`
+	nm=${p}_mkndx_helix_dists
+	ndx=$nm.ndx
+	name=${pdb%_cgx.pdb}
+	if [ ! -f $ndx ]; then
+	    gmx make_ndx -f $pdb -o $ndx < $nm.in
+	fi
+	opts="-s $pdb -f $pdb -n $ndx -group"
+	onm=dist_${name}
+	for s in in out; do
+	    a=TM1-$s
+	    b=TM2-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM1-$s
+	    b=TM5-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM1-$s
+	    b=TM7-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM7-$s
+	    b=TM11-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM5-$s
+	    b=TM8-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM2-$s
+	    b=TM11-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    a=TM5-$s
+	    b=TM11-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    # other dists to look at:
+	    # 2-11
+	    a=TM2-$s
+	    b=TM11-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    # 8-7
+	    a=TM8-$s
+	    b=TM7-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    # 2-8
+	    a=TM2-$s
+	    b=TM8-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	    # 1-8
+	    a=TM1-$s
+	    b=TM8-$s
+	    of=${onm}_${a}_${b}.xvg
+	    if [ ! -f $of ]; then
+		printf $a"\n"$b"\n" | gmx mindist $opts -od $of
+	    fi
+	done
+    done
+done
+
+# now make histograms:
+echo "Make histograms"
+for i in dist_*.xvg; do 
+    echo $i
+    mkhist.py -b 0.005 -d 1 $i > ${i/dist/hist}; 
+done
+
+echo "Make combined histograms"
+for i in dist_*_2_*.xvg; do 
+    echo $i
+    cat ${i/_2_/_?_} > t; 
+    j=${i/dist/hist}
+    mkhist.py -b 0.005 -d 1 t > ${j/_2_/_all_}; 
+    rm -f t
+done
+
+#last line

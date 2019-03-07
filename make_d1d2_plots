@@ -1,0 +1,126 @@
+#!/bin/bash -e
+
+# make d1-d2 plots (TM pair out = d1, in = d2), 
+# cf TM5-8 d1/d2 Nagarathinam et al., DOI: 10.1038/s41467-018-06306-x
+# we have to go back to the dist files, to have the correlation
+# between the two.
+# 
+# Copyright (c) 2018 K. Anton Feenstra (feenstra@few.vu.nl)
+# 
+# This may look like software, but is an actual research tool.
+# It workes for the purpose it was written for. It may work for you.
+# If not and/or it ends up destroying your universe and all you hold
+# dear, I will feel sorry for you, but you cannot hold me responsible.
+# Please do file a bug report :-)
+# 
+# newest version(s) available from:
+# https://github.com/ibivu/ConsDYN.git 
+# 
+#    PLEASE CITE:
+#    
+#    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
+#    Kei Yura, K. Anton Feenstra. 
+#    "Exploring the effect of single amino acid variations on the 
+#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
+#    enhanced sampling coarse-grained simulation"
+#    F1000, submitted (2019).
+#    
+#    :ETIC ESAELP
+#    
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+for i in dist_*_2_TM*-out_TM*-out.xvg; do
+    echo $i
+    name=${i/_2_/_all_} # name for output
+    name=${name%.xvg}_vs_in
+    i=${i/_2_/_?_} # insert wildchard to get all simulations (2-6)
+    j=${i/-out/-in} # create d2 name from d1 by changing out to in
+    j=${j/-out/-in} # two times
+    awk '{print} ENDFILE{print "&"}' $i > 1
+    awk '{print} ENDFILE{print "&"}' $j > 2
+    paste 1 2 | awk '/^[@#]/{next} \
+		     {print $2, $4}' > ${name}.xvg
+    ( head -1 ${name}.xvg && echo "&" ) >> ${name}.xvg
+done
+
+# reference plots with only both WILD:
+for i in dist_4ZW9_CON_WILD_all_TM*_TM*-out_vs_in.xvg; do
+    j=${i/_4ZW9_/_*_}
+    k=${i/_4ZW9_/_both_}
+    n=${k%.xvg}
+    # make title with spaces, not underscores
+    t=`echo $n | sed 's/_/ /g'`
+    t=${t/-out /-}; t=${t/-out vs in/}
+    # x is out, y is in
+    x="${t/dist * all /distance } outside"
+    y="${t/dist * all /distance } inside"
+    out=${n/-out_/-}.pdf
+    echo "$j" $out
+    # get coordinate ranges:
+    l=${j/_all_/_?_}; l=${l/_WILD_/_*_}; l=${l/_vs_in/}
+    xrange=`sort -gk2 $l | grep -v '^[#@&]' | (head -1; tail -1) | \
+    		 awk 'NR==1{min=$2-0.05} NR==2{max=$2+0.05} END {print min","max}'`
+    l=${l/-out/-in}; l=${l/-out/-in}
+    yrange=`sort -gk2 $l | grep -v '^[#@&]' | (head -1; tail -1) | \
+    		 awk 'NR==1{min=$2-0.05} NR==2{max=$2+0.05} END {print min","max}'`
+    echo "X,Y range: " $xrange " , " $yrange
+    ./plot_d1d2.py -t "$t" -x "$x" -y "$y" $j $out \
+		   --xrange $xrange --yrange $yrange --grid 0.02
+done
+
+#echo DEBUG; exit -1
+
+# comparison plots of all mutants vs both WILD:
+for i in dist_????_CON_[A-Z][0-9]*_all_TM*-out_TM*-out_vs_in.xvg; do
+    echo $i
+    j=${i/_[A-Z][0-9][0-9][A-Z]_/_WILD_}
+    j=${j/_[A-Z][0-9][0-9][0-9][A-Z]_/_WILD_}
+    j=${j/_4ZW9_/_*_}; j=${j/_5EQI_/_*_}
+    n=${i%.xvg}
+    echo $j 
+    # make title with spaces, not underscores
+    t=`echo $n | sed 's/_/ /g'`
+    t=${t/-out /-}; t=${t/-out vs in/}
+    # x is out, y is in
+    x="${t/dist * all /distance } outside"
+    y="${t/dist * all /distance } inside"
+    out=${n/-out_/-}.pdf
+    echo $out
+    # get coordinate ranges:
+    l=${j/_all_/_?_}; l=${l/_WILD_/_*_}; l=${l/_vs_in/}
+    xrange=`sort -gk2 $l | grep -v '^[#@&]' | (head -1; tail -1) | \
+    		 awk 'NR==1{min=$2-0.05} NR==2{max=$2+0.05} END {print min","max}'`
+    l=${l/-out/-in}; l=${l/-out/-in}
+    yrange=`sort -gk2 $l | grep -v '^[#@&]' | (head -1; tail -1) | \
+    		 awk 'NR==1{min=$2-0.05} NR==2{max=$2+0.05} END {print min","max}'`
+    echo "X,Y range: " $xrange " , " $yrange
+    ./plot_d1d2.py -t "$t" -x "$x" -y "$y" $j $i $out \
+		   --xrange $xrange --yrange $yrange --grid 0.02
+done
+
+# make mosaics:
+for i in dist_both_*_WILD_*_TM*-TM*-out_vs_in.pdf; do
+    echo $i
+    j=${i/_both_/_*_}
+    j=${j/_WILD_/_*_}
+    o=${i/_both_/_}; o=${o/_WILD_/_}
+    h=${o/dist_CON_all_/hexagon-}; h=${h/-out_vs_in/}
+    pdfnup --nup 4x4 ../hexagons/$h $j -o $o
+done
+
+#update zip file
+zip -u dist_contour_plots_TM_pairs.zip dist_*-out_vs_in.pdf dist_CON_all_*.pdf
+
+#last line
