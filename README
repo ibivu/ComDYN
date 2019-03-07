@@ -54,12 +54,18 @@ calc_overlap.py
 - calculates overlap and shift between distributions 
   (histograms) from two xvg input files (identical bin sets
   are assumed).
+  depends on numpy, optparse, vararg (see below)
 
 plot_d1d2.py
 - reads pairs of xvg files from 'gmx mindist', for
   the 'in' and 'out' distances of selected TM pairs.
   Plots countours of density using KDE.
-  Depends on scipy.stats, matplotlib, vararg, optparse, numpy
+  Depends on scipy.stats, matplotlib, optparse, numpy, vararg (see below)
+
+vararg.py
+- small package for callback function to be used with OptionParser
+  to allow multiple arguments for one option on the commandline.
+  Used by calc_overlap.py and plot_d1d2.py
 
 make_plots
 - using the output files of run_mindist, creates
@@ -86,6 +92,7 @@ cgxlate.sed:
   
 mkhist.py
 - creates 1d histograms from input file by simple binning
+  (depends on sys and math)
 
 filter_conserved_rubbers.awk
 - removes asll elastic network interactions from the input
