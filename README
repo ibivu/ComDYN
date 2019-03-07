@@ -78,6 +78,12 @@ run_mindist
   as well as combining the replicates per WT and mutant.
   All filenames are hardcoded.
 
+cgxlate.sed:
+- simple sed script to translate MARTINI bead names in a PDB
+  file from the simulation, into regular protein sidechain
+  atom names, such as CA, CB, CG, CD. This allows for easy
+  visualization in any generic protein viewer.
+  
 mkhist.py
 - creates 1d histograms from input file by simple binning
 
