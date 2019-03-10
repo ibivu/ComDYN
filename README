@@ -7,9 +7,8 @@
     
     Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
     Kei Yura, K. Anton Feenstra. 
-    "Exploring the effect of single amino acid variations on the 
-    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
-    enhanced sampling coarse-grained simulation"
+    "Showing the impact of pathogenic mutations of the glucose
+     transporter (GLUT1) on the channel dynamics using ConsDYN"
     F1000, submitted (2019).
     
     :ETIC ESAELP
@@ -32,7 +31,10 @@ newest version(s) available from:
 https://github.com/ibivu/ConsDYN.git 
  
 Overview of specialized scripts used in the simulation setup, 
-data processing and plotting for "Exploring the effect of single amino acid variations on the function of the glucose transporter SLC2A GLUT1 and GLUT3 by enhanced sampling coarse-grained simulation" by Halima Mouhib, Akiko Higuchi, Sanne Abeln, Kei Yura, K. Anton Feenstra. F1000, submitted (2019).
+data processing and plotting for "Showing the impact of pathogenic 
+mutations of the glucose transporter (GLUT1) on the channel dynamics 
+using ConsDYN" by Halima Mouhib, Akiko Higuchi, Sanne Abeln, Kei Yura, 
+K. Anton Feenstra. F1000, submitted (2019).
 
 Most scripts depend on a particular organisation and naming of
 the input files, which is not described here in detail.

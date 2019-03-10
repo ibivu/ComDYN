@@ -23,9 +23,8 @@
 #    
 #    Halima Mouhib, Akiko Higuchi, Sanne Abeln, 
 #    Kei Yura, K. Anton Feenstra. 
-#    "Exploring the effect of single amino acid variations on the 
-#    function of the glucose transporter SLC2A GLUT1 and GLUT3 by 
-#    enhanced sampling coarse-grained simulation"
+#    "Showing the impact of pathogenic mutations of the glucose
+#     transporter (GLUT1) on the channel dynamics using ConsDYN"
 #    F1000, submitted (2019).
 #    
 #    :ETIC ESAELP
