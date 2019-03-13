@@ -30,11 +30,15 @@
 newest version(s) available from:
 https://github.com/ibivu/ConsDYN.git 
  
-Overview of specialized scripts used in the simulation setup, 
-data processing and plotting for "Showing the impact of pathogenic 
-mutations of the glucose transporter (GLUT1) on the channel dynamics 
-using ConsDYN" by Halima Mouhib, Akiko Higuchi, Sanne Abeln, Kei Yura, 
-K. Anton Feenstra. F1000, submitted (2019).
+An overview of the simulation setup, data processing and plotting can be found 
+in: "Showing the impact of pathogenic mutations of the glucose transporter 
+(GLUT1) on the channel dynamics using ConsDYN" by Halima Mouhib, Akiko 
+Higuchi, Sanne Abeln, Kei Yura, K. Anton Feenstra. F1000, submitted (2019).
+
+A description of specialized scripts used in the simulation setup and 
+detailed data processing can be found in the Supporting Methods:
+https://github.com/ibivu/ConsDYN/blob/master/F1000_Supporting_Methods_Feenstra.pdf
+
 
 Most scripts depend on a particular organisation and naming of
 the input files, which is not described here in detail.
